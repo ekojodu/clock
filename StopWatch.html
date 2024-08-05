@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>My StopWatch</title>
+		<style>
+			body {
+				background-color: black;
+			}
+			#container {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				min-height: 50vh;
+			}
+			#container h1 {
+				font-size: 3rem;
+				color: lightseagreen;
+			}
+			.stop-container {
+				background-color: aquamarine;
+				border: 2px solid;
+				border-radius: 50%;
+				padding: 130px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: column;
+			}
+			.display {
+				color: grey;
+				font-family: cursive;
+				font-size: 1.5rem;
+				font-weight: 800;
+				text-shadow: 2px 2px 2px black;
+			}
+			.start-btn,
+			.reset-btn,
+			.stop-btn {
+				font-size: 1rem;
+				background-color: green;
+				font-weight: 700;
+				color: pink;
+				margin-top: 2rem;
+			}
+			.stop-btn {
+				background-color: red;
+				color: burlywood;
+			}
+		</style>
+	</head>
+	<body>
+		<section id="container">
+			<h1 class="heading">Stop<span>Watch</span></h1>
+
+			<div class="stop-container">
+				<div class="display" id="display">00:00:00:00</div>
+				<div class="button">
+					<button class="start-btn" onclick="start()">Start</button>
+					<button class="stop-btn" onclick="stop()">Stop</button>
+					<button class="reset-btn" onclick="reset()">Reset</button>
+				</div>
+			</div>
+		</section>
+
+		<script>
+			// This line selects the HTML element with the id display and stores it in the variable display.
+			const display = document.getElementById('display');
+
+			// These lines initialize four variables:
+			let isRunning = false; // isRunning: A boolean that tracks whether the stopwatch is currently running.
+			let timer = null; // timer: A variable to store the interval ID for the timer.
+			let startTime = 0; // startTime: The time when the stopwatch was started.
+			let elapsedTime = 0; // elapsedTime: The total time elapsed since the stopwatch was started.
+
+			function start() {
+				// This function starts the stopwatch:
+				if (!isRunning) {
+					// It checks if the stopwatch is not already running (!isRunning).
+					startTime = Date.now() - elapsedTime; // If not running, it sets startTime to the current time minus any previously elapsed time.
+					timer = setInterval(update, 10); // setInterval is used to call the update function every 10 milliseconds, and the interval ID is stored in timer.
+					isRunning = true; // isRunning is set to true to indicate that the stopwatch is now running.
+				}
+			}
+
+			function stop() {
+				//             This function stops the stopwatch:
+				if (isRunning) {
+					// It checks if the stopwatch is currently running (isRunning).
+					clearInterval(timer); // If running, it clears the interval using clearInterval(timer), stopping the update function from being called.
+					isRunning = false; // isRunning is set to false to indicate that the stopwatch is now stopped.
+				}
+			}
+
+			function reset() {
+				//             This function resets the stopwatch:
+				clearInterval(timer); // It clears the interval using clearInterval(timer), stopping the update function from being called.
+				isRunning = false; // isRunning is set to false to indicate that the stopwatch is not running.
+				elapsedTime = 0; // elapsedTime is reset to 0.
+				display.textContent = '00:00:00:00'; // The display is reset to show 00:00:00:00.
+			}
+
+			function update() {
+				//                 This function updates the stopwatch display:
+				const currentTime = Date.now(); // It gets the current time with Date.now().
+				elapsedTime = currentTime - startTime; // elapsedTime is calculated by subtracting startTime from the current time.
+				// Hours, minutes, seconds, and milliseconds are calculated from elapsedTime:
+				let hours = Math.floor(elapsedTime / (1000 * 60 * 60)); // Hours are calculated by dividing elapsedTime by the number of milliseconds in an hour.
+				let minutes = Math.floor((elapsedTime / (1000 * 60)) % 60); // Minutes are calculated by dividing elapsedTime by the number of milliseconds in a minute and taking the remainder when divided by 60.
+				let seconds = Math.floor((elapsedTime / 1000) % 60); // Seconds are calculated by dividing elapsedTime by the number of milliseconds in a second and taking the remainder when divided by 60.
+				let milliseconds = Math.floor((elapsedTime % 1000) / 10); // Milliseconds are calculated by taking the remainder of elapsedTime when divided by 1000 and dividing by 10.
+				// Each unit of time (hours, minutes, seconds, milliseconds) is converted to a string and padded with leading zeros if necessary.
+				hours = String(hours).padStart(2, '0');
+				minutes = String(minutes).padStart(2, '0');
+				seconds = String(seconds).padStart(2, '0');
+				milliseconds = String(milliseconds).padStart(2, '0');
+				// The display is updated with the formatted time string using textContent.
+				display.textContent = `${hours}:${minutes}:${seconds}:${milliseconds}`;
+			}
+		</script>
+	</body>
+</html>
